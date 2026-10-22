@@ -1,0 +1,40 @@
+{
+  "distribution": "cupboard",
+  "kind": "plugin", "name": "linkedin-company", "version": "0.1.0", "papercusp": "^0.1.0",
+  "description": "LinkedIn company-page text publishing and authored-post reads. Partner approval pending; offline fakes and conformance only.",
+  "author": "Papercusp", "license": "MIT", "main": "./index.cjs",
+  "runtime": { "kind": "daemon", "daemonCommand": ["node", "daemon.cjs"] },
+  "capabilities": [], "tools": [],
+  "provider": {
+    "id": "linkedin-company", "contractVersion": 1, "displayName": "LinkedIn company page",
+    "datatypes": ["social-post"], "capabilities": ["social.post"],
+    "egressHosts": ["api.linkedin.com", "www.linkedin.com"],
+    "verification": {
+      "verifiedAt": "2026-10-17",
+      "sources": [
+        "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api",
+        "https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2",
+        "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/organizations/organization-access-control-by-role"
+      ],
+      "capabilities": { "social.post": "2026-10-17" },
+      "blockedOn": "LinkedIn Community Management partner approval, the organization's approved r_organization_social/w_organization_social grant and Page role, OpenID Connect on the separate linkedin-company app, and Member Data storage/search/model-service review are pending. Avi submits the application."
+    },
+    "oauth": {
+      "authorizeUrl": "https://www.linkedin.com/oauth/v2/authorization",
+      "tokenUrl": "https://www.linkedin.com/oauth/v2/accessToken",
+      "scopes": ["openid", "profile", "r_organization_social", "w_organization_social"],
+      "clientRegistrationRef": "linkedin-company", "refreshPolicy": "reauthorize",
+      "identity": { "url": "https://api.linkedin.com/v2/userinfo", "idField": "sub", "displayNameField": "name" }
+    },
+    "setup": { "appRegistration": {
+      "createUrl": "https://www.linkedin.com/developers/apps",
+      "docsUrl": "https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api",
+      "copyHint": "Use a separate linkedin-company registration with both Sign In with LinkedIn using OpenID Connect and approved Community Management access. Avi submits the partner application. Supply the exact company Page id; the package does not select an organization from an ACL list. Personal-profile posting uses the separate linkedin registration."
+    } },
+    "configSchema": {
+      "type": "object", "required": ["organizationId"],
+      "properties": { "organizationId": { "type": "string", "pattern": "^[0-9]+$", "title": "Company Page organization id" } },
+      "additionalProperties": false
+    }
+  }
+}
